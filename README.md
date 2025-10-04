@@ -4,7 +4,7 @@ A lightweight ROS 2 node for real-time 2D LiDAR-based obstacle detection and tra
 
 ## 📌 Overview
 
-This package enables autonomous drones to perceive and track nearby obstacles using a 2D LiDAR (e.g., RPLIDAR, Hokuyo) in GPS-denied or cluttered environments such as indoors, forests, or urban canyons. It integrates with PX4 via the ROS 2 microRTPS bridge to fuse LiDAR scans with vehicle state (position and attitude), transforming obstacle points into the global ENU frame and publishing their positions and velocities for use by path planners or avoidance controllers.
+This package enables autonomous drones to perceive and track nearby obstacles using a 2D LiDAR (e.g., RPLIDAR, Hokuyo) in cluttered environments such as indoors, forests, or urban canyons. It integrates with PX4 via the ROS 2 microRTPS bridge to fuse LiDAR scans with vehicle state (position and attitude), transforming obstacle points into the global ENU frame and publishing their positions and velocities for use by path planners or avoidance controllers.
 
 ## ✨ Features
 
@@ -18,8 +18,8 @@ This package enables autonomous drones to perceive and track nearby obstacles us
 ## 📦 Requirements
 
 - **ROS 2** (Humble or later recommended)  
-- **PX4 Autopilot** with [micrortps_agent](https://docs.px4.io/main/en/middleware/micrortps.html) running  
-- 2D LiDAR publishing `/scan` (`sensor_msgs/LaserScan`)  
+- **PX4 Autopilot** with running  
+- 2D LiDAR publishing `/laser_scan` (`sensor_msgs/LaserScan`)  
 - PX4 topics:  
   - `/fmu/out/vehicle_local_position`  
   - `/fmu/out/vehicle_attitude`
@@ -51,6 +51,3 @@ This package enables autonomous drones to perceive and track nearby obstacles us
 - For best results, align LiDAR frame with drone FRD convention.
 - Designed for **planar environments**; not suitable for 3D obstacle avoidance.
 
----
-
-> 🚀 Ready to integrate with local planners like Nav2, EGO-Planner, or custom PX4 avoidance logic!
