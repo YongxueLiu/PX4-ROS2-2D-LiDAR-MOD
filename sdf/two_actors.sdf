@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <world name="default">
+    <!-- ===== 物理与重力 ===== -->
+    <physics type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic"/>
+
+    <!-- ===== 场景与光照 ===== -->
+    <scene>
+      <grid>false</grid>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+    <light name="sunUTC" type="directional">
+      <pose>0 0 500 0 -0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <intensity>1</intensity>
+      <direction>0.001 0.625 -0.78</direction>
+      <diffuse>0.904 0.904 0.904 1</diffuse>
+      <specular>0.271 0.271 0.271 1</specular>
+      <attenuation>
+        <range>2000</range>
+        <linear>0</linear>
+        <constant>1</constant>
+        <quadratic>0</quadratic>
+      </attenuation>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+
+    <!-- ===== 地面 ===== -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>500 500</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>500 500</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ===== 第一个 Actor ===== -->
+    <actor name="actor_walking_1">
+      <pose>-5 -5 0 0 0 0</pose>
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walk">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script loop="true">
+        <trajectory id="0" type="walk" tension="0.6">
+          <waypoint>
+            <time>0</time>
+            <pose>-5 -5 1.0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>50</time>
+            <pose>5 -5 1.0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>75</time>
+            <pose>5 5 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>91.7</time>
+            <pose>-5 5 1.0 0 0 3.142</pose>
+          </waypoint>
+          <waypoint>
+            <time>104.2</time>
+            <pose>-5 -5 1.0 0 0 -1.57</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <!-- ===== 第二个 Actor，延迟 5s，保持 1m 距离 ===== -->
+    <actor name="actor_walking_2">
+      <pose>-4 -5 0 0 0 0</pose>
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walk">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <interpolate_x>true</interpolate_x>
+      </animation>
+      <script loop="true">
+        <trajectory id="0" type="walk" tension="0.6">
+          <waypoint>
+            <time>5</time>
+            <pose>-4 -5 1.0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>55</time>
+            <pose>6 -5 1.0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>80</time>
+            <pose>6 5 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>96.7</time>
+            <pose>-4 5 1.0 0 0 3.142</pose>
+          </waypoint>
+          <waypoint>
+            <time>109.2</time>
+            <pose>-4 -5 1.0 0 0 -1.57</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <!-- ===== 地球坐标系 ===== -->
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>47.397971057728974</latitude_deg>
+      <longitude_deg>8.546163739800146</longitude_deg>
+      <elevation>0</elevation>
+    </spherical_coordinates>
+  </world>
+</sdf>
+
