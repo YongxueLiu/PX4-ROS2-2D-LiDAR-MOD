@@ -1,3 +1,7 @@
+'''
+writer:Liu Yongxue
+email: 805110687@qq.com
+'''
 #!/usr/bin/env python3
 """
 ros2_px4_lidar_processor.py
@@ -47,7 +51,7 @@ class LidarPX4Processor(Node):
         # ========== 参数配置 ==========
         self.range_min = 0.1          # LiDAR 有效最小距离（米）
         self.range_max = 30.0         # LiDAR 有效最大距离（米）
-        self.cluster_distance_threshold = 0.5  # 聚类时点间最大距离（米）
+        self.cluster_distance_threshold = 0.8  # 聚类时点间最大距离（米）
         self.min_cluster_size = 3     # 聚类最小点数（防噪点）
         self.obs_match_radius = 1.0   # 障碍物匹配最大距离（米）
 
@@ -78,9 +82,9 @@ class LidarPX4Processor(Node):
         self.curr_obstacles = []      # 当前帧障碍物列表（由 scan_cb 填充）
         self.next_obs_id = 0          # 下一个障碍物 ID
 
-        # 定时器：每 1.0 秒调用一次 track_and_compute_speed
+        # 定时器：每 0.5 秒调用一次 track_and_compute_speed
         # → 保证速度计算频率固定，避免回调抖动导致 dt 过小
-        self.timer = self.create_timer(1.0, self.track_and_compute_speed)
+        self.timer = self.create_timer(0.5, self.track_and_compute_speed)
 
         self.get_logger().info('lidar_px4_processor initialized')
 
@@ -133,9 +137,12 @@ class LidarPX4Processor(Node):
         for cluster in clusters:
             # 计算聚类中心（FLU）
             centroid_flu = np.mean(cluster, axis=0)
+             # LiDAR 偏移和无人机中心高度（FLU 坐标系）
+            lidar_offset = np.array([0.12, 0.0, 0.26])
+            vehicle_center_height = np.array([0.0, 0.0, 0.24])
+            centroid_flu = centroid_flu + lidar_offset + vehicle_center_height
             # FLU → FRD：y 和 z 取反（LiDAR 通常安装为 FLU，但 PX4 使用 FRD）
             centroid_frd = self.flu_to_frd(centroid_flu)
-
             # 若无位姿信息，跳过
             if self.latest_att_q is None or self.latest_localpos is None:
                 continue
@@ -158,7 +165,7 @@ class LidarPX4Processor(Node):
         self.curr_obstacles = obstacles_enu
 
 
-    # ---------------- 定时器任务：每1秒执行一次 ----------------
+    # ---------------- 定时器任务：每0.5秒执行一次 ----------------
     def track_and_compute_speed(self):
         """
         核心逻辑：障碍物跟踪 + 速度估计
@@ -172,7 +179,7 @@ class LidarPX4Processor(Node):
         if not hasattr(self, 'obstacle_histories'):
             self.obstacle_histories = {}      # {id: [(pos, t), ...]}
             self.filtered_velocities = {}     # {id: [vx, vy, vz]}
-            self.speed_window = getattr(self, 'speed_window', 3.0)      # 速度计算窗口（秒）
+            self.speed_window = getattr(self, 'speed_window', 2.0)      # 速度计算窗口（秒）
             self.lpf_alpha = getattr(self, 'lpf_alpha', 0.4)            # 低通滤波系数（0~1）
             self.obstacle_timeout = getattr(self, 'obstacle_timeout', 3.0)  # 障碍物超时时间（秒）
 
